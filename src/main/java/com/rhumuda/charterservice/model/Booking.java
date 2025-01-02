@@ -1,57 +1,56 @@
 package com.rhumuda.charterservice.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import lombok.Getter;
+import lombok.Setter;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.ArrayList;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "bookings")
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    
-    @Column(unique = true)
+    private Long id;
     private String bookingId;
     
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phone;
-    private Integer duration;
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    private LocalDateTime primaryDate;
-    @JsonFormat(pattern = "HH:mm")
-    private LocalTime departureTime;
-    private Integer adults;
-    private Integer seniors;
-    private Integer children;
-    private Integer infants;
-    private String additionalComments;
-    private Boolean newsletterOptIn;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+    
+    @ManyToOne
+    @JoinColumn(name = "package_id")
+    private Package selectedPackage;
+    
+    private LocalDateTime bookingDate;
+    private int numberOfPassengers;
+    private String jettyLocation;
+    private String specialRequests;
+    
+    @ElementCollection
+    @CollectionTable(name = "booking_add_ons", 
+        joinColumns = @JoinColumn(name = "booking_id"))
+    @Column(name = "addon")
+    private Set<String> addOns;
+    
+    private LocalDateTime alternativeDate1;
+    private LocalDateTime alternativeDate2;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     
     @Enumerated(EnumType.STRING)
     private BookingStatus status = BookingStatus.PENDING;
     
-    private String cancellationReason;
-    private LocalDateTime createdAt;
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
     
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<AlternativeDate> alternativeDates = new ArrayList<>();
-    
-    private String jetty;
-    private String charterType;
-    
-    public void addAlternativeDate(AlternativeDate date) {
-        alternativeDates.add(date);
-        date.setBooking(this);
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 } 
