@@ -1,12 +1,16 @@
 package com.rhumuda.charterservice.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.EqualsAndHashCode;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 @DiscriminatorValue("FISHING")
+@EqualsAndHashCode(callSuper = true)
 public class FishingPackage extends Package {
     @Column(name = "price_min")
     private Double priceMin;

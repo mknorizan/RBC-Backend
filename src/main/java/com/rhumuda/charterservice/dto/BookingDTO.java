@@ -1,14 +1,13 @@
 package com.rhumuda.charterservice.dto;
 
 import lombok.Data;
-import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
 public class BookingDTO {
     private String packageId;
     private String packageType;
-    private LocalDateTime bookingDate;
+    private String bookingDate;
     private int numberOfPassengers;
     private String jettyLocation;
     private String customerName;
@@ -16,6 +15,16 @@ public class BookingDTO {
     private String customerPhone;
     private String specialRequests;
     private Set<String> addOns;
-    private LocalDateTime alternativeDate1;
-    private LocalDateTime alternativeDate2;
+    private String alternativeDate1;
+    private String alternativeDate2;
+    private CustomerAddressDTO customerAddress;
+
+    @Data
+    public static class CustomerAddressDTO {
+        private String addressLine1;
+        private String addressLine2;
+        private String postalCode;
+        private String city;
+        private String country;
+    }
 } 

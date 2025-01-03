@@ -1,11 +1,11 @@
 C:\laragon\www\rhumuda\backend\src\main\java\com\rhumuda\charterservice\model\BoatPackage.java
+C:\laragon\www\rhumuda\backend\src\main\java\com\rhumuda\charterservice\dto\PackageDetails.java
 C:\laragon\www\rhumuda\backend\src\main\java\com\rhumuda\charterservice\model\Package.java
 C:\laragon\www\rhumuda\backend\src\main\java\com\rhumuda\charterservice\repository\PackageRepository.java
 C:\laragon\www\rhumuda\backend\src\main\java\com\rhumuda\charterservice\repository\BookingRepository.java
 C:\laragon\www\rhumuda\backend\src\main\java\com\rhumuda\charterservice\config\WebConfig.java
 C:\laragon\www\rhumuda\backend\src\main\java\com\rhumuda\charterservice\model\FishingPackage.java
-C:\laragon\www\rhumuda\backend\src\main\java\com\rhumuda\charterservice\dto\PackageDTO.java
-C:\laragon\www\rhumuda\backend\src\main\java\com\rhumuda\charterservice\model\PriceRange.java
+C:\laragon\www\rhumuda\backend\src\main\java\com\rhumuda\charterservice\repository\CustomerRepository.java
 C:\laragon\www\rhumuda\backend\src\main\java\com\rhumuda\charterservice\model\BookingStatus.java
 C:\laragon\www\rhumuda\backend\src\main\java\com\rhumuda\charterservice\dto\BookingDTO.java
 C:\laragon\www\rhumuda\backend\src\main\java\com\rhumuda\charterservice\CharterServiceApplication.java
@@ -15,4 +15,3 @@ C:\laragon\www\rhumuda\backend\src\main\java\com\rhumuda\charterservice\controll
 C:\laragon\www\rhumuda\backend\src\main\java\com\rhumuda\charterservice\service\BookingService.java
 C:\laragon\www\rhumuda\backend\src\main\java\com\rhumuda\charterservice\model\Booking.java
 C:\laragon\www\rhumuda\backend\src\main\java\com\rhumuda\charterservice\model\Customer.java
-C:\laragon\www\rhumuda\backend\src\main\java\com\rhumuda\charterservice\service\EmailService.java

@@ -7,16 +7,32 @@ import com.rhumuda.charterservice.service.BookingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import java.util.HashMap;
+import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/bookings")
 @RequiredArgsConstructor
+@Slf4j
 public class BookingController {
     private final BookingService bookingService;
     
     @PostMapping
-    public ResponseEntity<BookingResponse> createBooking(@RequestBody BookingDTO bookingDTO) {
-        Booking booking = bookingService.createBooking(bookingDTO);
-        return ResponseEntity.ok(new BookingResponse(booking));
+    public ResponseEntity<?> createBooking(@RequestBody BookingDTO bookingDTO) {
+        try {
+            log.info("Received booking request: {}", bookingDTO);
+            BookingResponse response = bookingService.createBooking(bookingDTO);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Error creating booking: ", e);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
+            errorResponse.put("error", "Failed to create booking");
+            errorResponse.put("details", e.toString());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                               .body(errorResponse);
+        }
     }
 } 
