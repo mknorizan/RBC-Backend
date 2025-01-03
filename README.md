@@ -1,98 +1,203 @@
-# Rhumuda Boat Charter - Backend System
+# Rhumuda Boat Charter - Backend Documentation
 
 ## Overview
 
-Rhumuda Boat Charter System is a comprehensive web-based booking platform designed for managing boat charter inquiries. The Phase 1 system implements a full inquiry-to-notification workflow, handling customer booking requests and administrative notifications through an automated system.
+The backend system for Rhumuda Boat Charter is built with Spring Boot, handling boat charter bookings and package management. The system uses a discriminator-based inheritance model for different package types (Boat and Fishing packages) and manages bookings with customer information.
 
-## Technical Stack Details
+## Technical Stack
 
+### Core Technologies
 - Spring Boot 3.2.2
 - Java 17
-- Maven for dependency management and build automation
-- JPA/Hibernate for database operations
-- Jackson for JSON processing
-- JavaMail for email services
+- MySQL 8.0
+- JPA/Hibernate
+- Lombok
+- JavaMail
 
-### Email Service
+### Development Tools
+- VS Code with Spring Boot extensions
+- Maven 3.6+
+- MySQL Workbench/phpMyAdmin
 
-- Gmail SMTP
-- Port: 587
-- TLS enabled
-- Supports HTML formatting
+## Project Structure
+```bash
+src/main/java/com/rhumuda/charterservice/
+├── controller/
+│ ├── BookingController.java # Handles booking requests
+│ └── PackageController.java # Manages package operations
+├── model/
+│ ├── Package.java # Abstract base class for packages
+│ ├── BoatPackage.java # Boat-specific package
+│ ├── FishingPackage.java # Fishing-specific package
+│ ├── Booking.java # Booking entity
+│ ├── Customer.java # Customer information
+│ └── BookingStatus.java # Enum for booking states
+├── repository/
+│ ├── BookingRepository.java
+│ └── PackageRepository.java
+├── service/
+│ ├── BookingService.java # Business logic for bookings
+│ └── EmailService.java # Email notification handling
+└── dto/
+├── BookingDTO.java # Data transfer objects
+├── BookingResponse.java
+└── PackageDTO.java
+```
 
-## Software Tools to Installed
+## Entity Relationships
 
-1. Microsoft Visual Studio Code (VS Code) - https://code.visualstudio.com/download
-2. Apache Maven. Please download a stable version - https://maven.apache.org/download.cgi
+### Package Inheritance Structure
+- Abstract `Package` class
+  - Common fields: id, packageId, title, description, duration, capacity
+  - Discriminator column: package_type
+- `BoatPackage` extends Package
+  - Additional fields: adultPrice, kidPrice, privateBoatPrice
+- `FishingPackage` extends Package
+  - Additional fields: priceMin, priceMax, distance, techniques
 
-## Installation & Setup
+### Booking-Customer Relationship
+- One-to-Many relationship
+- Customer can have multiple bookings
+- Cascade operations for customer creation
 
-1. Open Terminal window in VS Code
-2. Ensure current directory is pointing to: `RBC-Backend`
-3. Ensure Maven is installed. Run `which mvn`
-4. Navigate to `src/main/resources`
-5. Configure `application.properties` file. Ensure that the configuration is as follow :-
-   ```
-   spring.application.name=charter-service
-   spring.datasource.url=jdbc:mysql://localhost:3306/rhumuda_db?useSSL=false&serverTimezone=UTC
-   spring.datasource.username=root
-   spring.datasource.password=
-   spring.jpa.hibernate.ddl-auto=update
-   spring.jpa.show-sql=true
-   spring.web.cors.allowed-origins=http://localhost:5173
-   spring.web.cors.allowed-methods=GET,POST,PUT,DELETE,OPTIONS
-   spring.web.cors.allowed-headers=*
-   spring.mail.host=smtp.gmail.com
-   spring.mail.port=587
-   spring.mail.username=your-email@gmail.com
-   spring.mail.password=your-app-specific-password
-   spring.mail.properties.mail.smtp.auth=true
-   spring.mail.properties.mail.smtp.starttls.enable=true
-   admin.email=admin@example.com
-   ```
-6. Build the project: `mvn clean install`
-7. Run the application: `mvn spring-boot:run`
+## Database Setup
 
-### Database Setup
-
-1. Create MySQL database: `sql
+1. Create database with correct encoding:
+```bash
+sql
 CREATE DATABASE rhumuda_db
 CHARACTER SET utf8mb4
-COLLATE utf8mb4_unicode_ci;   `
-2. Tables will be automatically created by Hibernate
+COLLATE utf8mb4_unicode_ci;
+```
 
-## API Endpoints
+2. Important: If tables exist and need restructuring:
+```bash
+sql
+-- Drop tables in correct order to handle foreign keys
+DROP TABLE IF EXISTS booking_addons;
+DROP TABLE IF EXISTS booking_sessions;
+DROP TABLE IF EXISTS package_techniques;
+DROP TABLE IF EXISTS package_services;
+DROP TABLE IF EXISTS bookings;
+DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS packages;
+```
 
-- POST `/api/bookings`
+## Development Setup
 
-  - Creates new booking inquiry
-  - Requires JSON body with booking details
-  - Returns booking confirmation with ID
+1. Required VS Code Extensions:
+   - Extension Pack for Java
+   - Spring Boot Extension Pack
+   - Lombok Annotations Support
 
-- POST `/api/bookings/{bookingId}/cancel`
-  - Cancels existing booking
-  - Requires booking ID and reason
-  - Returns updated booking status
+2. Application Properties Configuration:
+```bash
+properties
+spring.application.name=charter-service
+spring.datasource.url=jdbc:mysql://localhost:3306/rhumuda_db?useSSL=false&serverTimezone=UTC
+spring.datasource.username=root
+spring.datasource.password=
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.web.cors.allowed-origins=http://localhost:5173
+```
+
+3. Build and Run:
+```bash
+mvn clean # Clean previous builds
+mvn install # Install dependencies
+mvn spring-boot:run # Run application
+```
+
+## Package Management
+
+### Package Types and Services
+1. Boat Packages
+   - Return trip services
+   - Equipment rental
+   - Price structure: adult, kid, private boat
+
+2. Fishing Packages
+   - Distance-based pricing
+   - Equipment and techniques
+   - Price range structure
+
+### Important Implementation Details
+- Package inheritance using `@DiscriminatorColumn`
+- Service lists stored in separate tables
+- Price ranges for different package types
+
+## Booking System
+
+### Booking Flow
+1. Receive booking DTO from frontend
+2. Create customer entity
+3. Generate unique booking ID
+4. Save booking with initial PENDING status
+5. Send email confirmation
+6. Return booking response
+
+### Critical Components
+- Automatic booking ID generation
+- Status tracking (PENDING/CONFIRMED/CANCELLED)
+- Email notification system
+- Alternative dates handling
+
+## Common Issues and Solutions
+
+1. Database Foreign Key Constraints
+   - Solution: Drop tables in correct order
+   - Use cascade operations carefully
+
+2. Package Type Discrimination
+   - Solution: Proper @DiscriminatorValue annotation
+   - Correct inheritance mapping
+
+3. Lombok Integration
+   - Solution: Install Lombok plugin
+   - Use @Getter/@Setter instead of @Data for entities
+
+## Testing
+
+1. Package Management:
+```bash
+curl -X POST http://localhost:8080/api/bookings -H "Content-Type: application/json" -d '{
+"packageId": "BT001",
+"bookingDate": "2024-01-20T10:00:00",
+"numberOfPassengers": 4
+// ... other fields
+}'
+```
+
+## Monitoring and Debugging
+
+### Logging Configuration
+```bash
+properties
+logging.level.org.springframework.web=DEBUG
+logging.level.com.rhumuda.charterservice=DEBUG
+spring.jpa.show-sql=true
+```
+
+### Common Debug Points
+1. Package inheritance mapping
+2. Booking creation flow
+3. Email service integration
+4. Database constraints
+
+## Current Limitations
+- Manual booking confirmation process
+- Basic email templates
+- No payment integration
+- Limited availability checking
+
+## Future Improvements
+- Automated booking confirmation
+- Enhanced email templates
+- Real-time availability
+- Payment gateway integration
 
 ## Support
-
-For technical support or inquiries:
-
+For technical support:
 - Email: mknorizan.work@gmail.com
-- Documentation: [link to documentation]
-- Issue tracking: [link to issue tracker]
-
-## Backend Development Important Key
-
-1. Backend server on port 8080
-2. Database on default MySQL port 3306
-3. Automatic table creation/updates via Hibernate
-
-## Current Limitations (Pending Development)
-
-- No user authentication
-- No admin interface
-- Manual communication post-inquiry
-- No payment processing
-- No real-time availability checking
-- Limited to single timezone (UTC)
+- Documentation: [Internal Wiki]
