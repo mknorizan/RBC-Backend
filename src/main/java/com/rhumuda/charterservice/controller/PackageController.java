@@ -23,10 +23,23 @@ public class PackageController {
     @GetMapping
     public ResponseEntity<List<PackageDetails>> getAllPackages() {
         try {
-            List<PackageDetails> packages = packageRepository.findAll().stream()
-                .map(this::convertToDTO)
+            logger.info("Starting to fetch all packages");
+            List<Package> rawPackages = packageRepository.findAll();
+            logger.info("Found {} raw packages in database", rawPackages.size());
+            
+            List<PackageDetails> packages = rawPackages.stream()
+                .map(pkg -> {
+                    logger.debug("Converting package: id={}, type={}, title='{}', name='{}', description='{}'", 
+                        pkg.getId(), 
+                        pkg.getPackageType(), 
+                        pkg.getTitle(), 
+                        pkg.getName(),
+                        pkg.getDescription());
+                    return convertToDTO(pkg);
+                })
                 .collect(Collectors.toList());
-            logger.info("Retrieved {} packages", packages.size());
+            
+            logger.info("Successfully converted {} packages to DTOs", packages.size());
             return ResponseEntity.ok(packages);
         } catch (Exception e) {
             logger.error("Error retrieving packages", e);
@@ -42,14 +55,28 @@ public class PackageController {
     }
 
     private PackageDetails convertToDTO(Package pkg) {
+        logger.info("Raw package data - id: {}, title: '{}', name: '{}', description: '{}', type: '{}'", 
+            pkg.getId(), 
+            pkg.getTitle(), 
+            pkg.getName(), 
+            pkg.getDescription(),
+            pkg.getPackageType()
+        );
+        
         PackageDetails dto = new PackageDetails();
         dto.setId(pkg.getId());
+        dto.setTitle(pkg.getTitle());
         dto.setName(pkg.getName());
         dto.setDescription(pkg.getDescription());
         dto.setType(pkg.getPackageType());
-        dto.setPrice(pkg.getPrice());
-        dto.setServices(pkg.getServices());
-
+        
+        logger.info("Converted DTO - id: {}, title: '{}', name: '{}', description: '{}'", 
+            dto.getId(), 
+            dto.getTitle(), 
+            dto.getName(),
+            dto.getDescription()
+        );
+        
         if (pkg instanceof BoatPackage) {
             BoatPackage boatPkg = (BoatPackage) pkg;
             dto.setAdultPrice(boatPkg.getAdultPrice());

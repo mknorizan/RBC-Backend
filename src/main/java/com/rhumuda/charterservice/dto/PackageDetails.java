@@ -6,6 +6,7 @@ import java.util.List;
 @Data
 public class PackageDetails {
     private Long id;
+    private String title;
     private String name;
     private String description;
     private String type;

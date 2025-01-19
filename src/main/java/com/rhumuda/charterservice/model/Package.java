@@ -17,6 +17,9 @@ public abstract class Package {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @Column(name = "title")
+    private String title;
+    
     @Column(nullable = false)
     private String name;
     
