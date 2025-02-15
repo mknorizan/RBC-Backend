@@ -1,0 +1,33 @@
+Booking ID: [booking_id]
+
+Dear [first_name] [last_name],
+
+Thank you for your recent enquiry about a boat charter with Rhumuda Boat Charter.
+
+We have received your request as below:
+
+Customer Details:
+Name: [first_name] [last_name]
+Email: [email]
+Phone Number: [phone_number]
+Address: [address_line1], [address_line2], [postal_code] [city], [country]
+
+Reservation Details:
+Category: [category_name]
+Package: [package_name]
+Jetty: [jetty_name]
+Booking Date: [booking_date]
+Passengers: [passengers]
+
+We are currently reviewing your request and will be in touch shortly with a confirmation and further details, including:
+
+Availability 
+We will confirm the availability of the boat and crew for your preferred date and time.
+
+Pricing
+We will provide you with a detailed price quote, including any applicable taxes or fees.
+
+Booking Confirmation
+Upon confirmation, we will provide you with a booking confirmation email with all the relevant information.
+
+We appreciate your interest in Rhumuda Boat Charter and look forward to providing you with a memorable boating experience.
