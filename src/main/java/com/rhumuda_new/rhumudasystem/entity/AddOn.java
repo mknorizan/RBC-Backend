@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "add_ons")
@@ -26,6 +27,10 @@ public class AddOn {
     
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
+
+    @Column(name = "per_person", nullable = false)
+    @JsonProperty("perPerson")
+    private Boolean perPerson = false;
 
     // Getters and Setters
     public Long getId() {
@@ -66,5 +71,13 @@ public class AddOn {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public Boolean getPerPerson() {
+        return perPerson;
+    }
+
+    public void setPerPerson(Boolean perPerson) {
+        this.perPerson = perPerson;
     }
 }

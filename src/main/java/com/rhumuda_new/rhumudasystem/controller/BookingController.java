@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/bookings")
-@CrossOrigin(origins = "http://localhost:3000")
 public class BookingController {
     private static final Logger logger = LoggerFactory.getLogger(BookingController.class);
 

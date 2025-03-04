@@ -8,7 +8,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/packages")
-@CrossOrigin(origins = "http://localhost:3000")
 public class PackageController {
 
     @Autowired

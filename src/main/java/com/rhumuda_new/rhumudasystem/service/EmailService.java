@@ -72,38 +72,7 @@ public class EmailService {
     }
 
     private void sendCustomerEmail(BookingDTO booking) throws MessagingException {
-        MimeMessagePreparator preparator = mimeMessage -> {
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
-
-            helper.setFrom(fromEmail);
-            helper.setTo(booking.getEmail());
-            helper.setSubject("Booking Inquiry Confirmation - Rhumuda Boat Charter");
-
-            String content;
-            if (emailTemplate != null) {
-                content = emailTemplate
-                        .replace("${bookingId}", booking.getBookingId())
-                        .replace("${firstName}", booking.getFirstName())
-                        .replace("${lastName}", booking.getLastName())
-                        .replace("${email}", booking.getEmail())
-                        .replace("${phoneNumber}", booking.getPhoneNumber())
-                        .replace("${addressLine1}", booking.getAddressLine1())
-                        .replace("${addressLine2}", booking.getAddressLine2() != null ? booking.getAddressLine2() : "")
-                        .replace("${categoryName}", booking.getCategoryName() != null ? booking.getCategoryName() : "")
-                        .replace("${packageName}", booking.getPackageName() != null ? booking.getPackageName() : "")
-                        .replace("${jettyName}", getJettyPointName(booking.getJettyPoint()))
-                        .replace("${bookingDate}", booking.getBookingDate().format(DATE_FORMATTER))
-                        .replace("${passengers}", String.valueOf(booking.getPassengers()));
-
-                logger.info("Email content prepared with template");
-            } else {
-                content = generatePlainTextEmail(booking);
-                logger.warn("Using fallback plain text email template");
-            }
-
-            helper.setText(content, true);
-        };
-
+        MimeMessagePreparator preparator = createEmailMessage(booking.getEmail(), "Booking Inquiry Confirmation - Rhumuda Boat Charter", prepareCustomerEmailContent(booking));
         try {
             mailSender.send(preparator);
             logger.info("Customer confirmation email sent to: {}", booking.getEmail());
@@ -111,6 +80,45 @@ public class EmailService {
             logger.error("Failed to send customer email: {}", e.getMessage(), e);
             throw new MessagingException("Failed to send customer email", e);
         }
+    }
+
+    private String prepareCustomerEmailContent(BookingDTO booking) {
+        String content;
+        if (emailTemplate != null) {
+            content = emailTemplate
+                    .replace("${bookingId}", booking.getBookingId())
+                    .replace("${firstName}", booking.getFirstName())
+                    .replace("${lastName}", booking.getLastName())
+                    .replace("${email}", booking.getEmail())
+                    .replace("${phoneNumber}", booking.getPhoneNumber())
+                    .replace("${addressLine1}", booking.getAddressLine1())
+                    .replace("${addressLine2}", booking.getAddressLine2() != null ? booking.getAddressLine2() : "")
+                    .replace("${categoryName}", booking.getCategoryName() != null ? booking.getCategoryName() : "")
+                    .replace("${packageName}", booking.getPackageName() != null ? booking.getPackageName() : "")
+                    .replace("${jettyName}", getJettyPointName(booking.getJettyPoint()))
+                    .replace("${bookingDate}", booking.getBookingDate().format(DATE_FORMATTER))
+                    .replace("${passengers}", String.valueOf(booking.getPassengers()));
+
+            logger.info("Email content prepared with template");
+        } else {
+            content = generatePlainTextEmail(booking);
+            logger.warn("Using fallback plain text email template");
+        }
+        return content;
+    }
+
+    private MimeMessagePreparator createEmailMessage(String to, String subject, String content) {
+        return mimeMessage -> {
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            messageHelper.setFrom(fromEmail);
+            messageHelper.setTo(to);
+            messageHelper.setSubject(subject);
+            messageHelper.setText(content, true);
+            
+            // Add logo
+            ClassPathResource logoResource = new ClassPathResource("static/images/logo-rhumuda.png");
+            messageHelper.addInline("logo", logoResource);
+        };
     }
 
     private String generatePlainTextEmail(BookingDTO booking) {
@@ -156,52 +164,7 @@ public class EmailService {
     }
 
     private void sendAdminEmail(BookingDTO booking) throws MessagingException {
-        MimeMessagePreparator preparator = mimeMessage -> {
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
-
-            helper.setFrom(fromEmail);
-            helper.setTo(adminEmail);
-            helper.setSubject("New Booking Inquiry - " + booking.getBookingId());
-
-            String content = String.format("""
-                    <html>
-                    <body style="font-family: Arial, sans-serif; line-height: 1.6;">
-                    <h2>New Booking Inquiry Received</h2>
-                    <p><strong>Booking ID:</strong> %s</p>
-                    <h3>Customer Details</h3>
-                    <p>
-                        <strong>Name:</strong> %s %s<br>
-                        <strong>Email:</strong> %s<br>
-                        <strong>Phone:</strong> %s<br>
-                        <strong>Address:</strong> %s %s
-                    </p>
-                    <h3>Reservation Details</h3>
-                    <p>
-                        <strong>Category:</strong> %s<br>
-                        <strong>Package:</strong> %s<br>
-                        <strong>Jetty:</strong> %s<br>
-                        <strong>Booking Date:</strong> %s<br>
-                        <strong>Group Size:</strong> %d
-                    </p>
-                    <p><strong>Please review and respond to the customer.</strong></p>
-                    </body>
-                    </html>
-                    """,
-                    booking.getBookingId(),
-                    booking.getFirstName(), booking.getLastName(),
-                    booking.getEmail(),
-                    booking.getPhoneNumber(),
-                    booking.getAddressLine1(),
-                    booking.getAddressLine2() != null ? booking.getAddressLine2() : "",
-                    booking.getCategoryName() != null ? booking.getCategoryName() : "",
-                    booking.getPackageName() != null ? booking.getPackageName() : "",
-                    getJettyPointName(booking.getJettyPoint()),
-                    booking.getBookingDate().format(DATE_FORMATTER),
-                    booking.getPassengers());
-
-            helper.setText(content, true);
-        };
-
+        MimeMessagePreparator preparator = createEmailMessage(adminEmail, "New Booking Inquiry - " + booking.getBookingId(), prepareAdminEmailContent(booking));
         try {
             mailSender.send(preparator);
             logger.info("Admin notification email sent for booking: {}", booking.getBookingId());
@@ -209,5 +172,43 @@ public class EmailService {
             logger.error("Failed to send admin email: {}", e.getMessage(), e);
             throw new MessagingException("Failed to send admin email", e);
         }
+    }
+
+    private String prepareAdminEmailContent(BookingDTO booking) {
+        return String.format("""
+                <html>
+                <body style="font-family: Arial, sans-serif; line-height: 1.6;">
+                <h2>New Booking Inquiry Received</h2>
+                <p><strong>Booking ID:</strong> %s</p>
+                <h3>Customer Details</h3>
+                <p>
+                    <strong>Name:</strong> %s %s<br>
+                    <strong>Email:</strong> %s<br>
+                    <strong>Phone:</strong> %s<br>
+                    <strong>Address:</strong> %s %s
+                </p>
+                <h3>Reservation Details</h3>
+                <p>
+                    <strong>Category:</strong> %s<br>
+                    <strong>Package:</strong> %s<br>
+                    <strong>Jetty:</strong> %s<br>
+                    <strong>Booking Date:</strong> %s<br>
+                    <strong>Group Size:</strong> %d
+                </p>
+                <p><strong>Please review and respond to the customer.</strong></p>
+                </body>
+                </html>
+                """,
+                booking.getBookingId(),
+                booking.getFirstName(), booking.getLastName(),
+                booking.getEmail(),
+                booking.getPhoneNumber(),
+                booking.getAddressLine1(),
+                booking.getAddressLine2() != null ? booking.getAddressLine2() : "",
+                booking.getCategoryName() != null ? booking.getCategoryName() : "",
+                booking.getPackageName() != null ? booking.getPackageName() : "",
+                getJettyPointName(booking.getJettyPoint()),
+                booking.getBookingDate().format(DATE_FORMATTER),
+                booking.getPassengers());
     }
 }

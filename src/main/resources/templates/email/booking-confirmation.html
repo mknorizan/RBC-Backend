@@ -4,43 +4,46 @@
     <meta charset="UTF-8">
     <title>Booking Confirmation</title>
 </head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px;">
-    <h1 style="font-size: 24px; margin-bottom: 20px;">Booking ID: ${bookingId}</h1>
+<body style="font-family: Arial, sans-serif; line-height: 1.5; max-width: 600px; margin: 0 auto; padding: 15px;">
+    <div style="text-align: center; margin-bottom: 20px;">
+        <img src="cid:logo" alt="Rhumuda Boat Charter" style="max-width: 180px; height: auto;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <strong>Booking ID:</strong> ${bookingId}
+    </div>
 
     <p>Dear ${firstName} ${lastName},</p>
-
     <p>Thank you for your recent inquiry about a boat charter with Rhumuda Boat Charter.</p>
 
-    <p>We have received your request as below:</p>
-
-    <h2 style="font-size: 18px; margin-top: 25px; margin-bottom: 15px;">Customer Detail</h2>
-    <div style="border: 1px solid #ccc; padding: 15px; margin: 10px 0;">
-        <div style="margin-bottom: 8px;"><strong>Name:</strong> ${firstName} ${lastName}</div>
-        <div style="margin-bottom: 8px;"><strong>Email:</strong> ${email}</div>
-        <div style="margin-bottom: 8px;"><strong>Phone:</strong> ${phoneNumber}</div>
-        <div style="margin-bottom: 8px;"><strong>Address:</strong> ${addressLine1}${addressLine2}</div>
+    <div style="background: #f9f9f9; padding: 15px; margin: 10px 0; border-radius: 4px;">
+        <h3 style="margin: 0 0 10px 0; font-size: 16px;">Customer Detail</h3>
+        <div><strong>Name:</strong> ${firstName} ${lastName}</div>
+        <div><strong>Email:</strong> ${email}</div>
+        <div><strong>Phone:</strong> ${phoneNumber}</div>
+        <div><strong>Address:</strong> ${addressLine1}${addressLine2}</div>
     </div>
 
-    <h2 style="font-size: 18px; margin-top: 25px; margin-bottom: 15px;">Reservation Detail</h2>
-    <div style="border: 1px solid #ccc; padding: 15px; margin: 10px 0;">
-        <div style="margin-bottom: 8px;"><strong>Category:</strong> ${categoryName}</div>
-        <div style="margin-bottom: 8px;"><strong>Package:</strong> ${packageName}</div>
-        <div style="margin-bottom: 8px;"><strong>Jetty:</strong> ${jettyName}</div>
-        <div style="margin-bottom: 8px;"><strong>Booking Date:</strong> ${bookingDate}</div>
-        <div style="margin-bottom: 8px;"><strong>Group Size:</strong> ${passengers}</div>
+    <div style="background: #f9f9f9; padding: 15px; margin: 10px 0; border-radius: 4px;">
+        <h3 style="margin: 0 0 10px 0; font-size: 16px;">Reservation Detail</h3>
+        <div><strong>Category:</strong> ${categoryName}</div>
+        <div><strong>Package:</strong> ${packageName}</div>
+        <div><strong>Jetty:</strong> ${jettyName}</div>
+        <div><strong>Booking Date:</strong> ${bookingDate}</div>
+        <div><strong>Group Size:</strong> ${passengers}</div>
     </div>
 
-    <p>We are currently reviewing your request and will be in touch shortly with a confirmation and further details, including:</p>
+    <p>We are currently reviewing your request and will contact you shortly regarding:</p>
+    <ul style="padding-left: 20px; margin: 10px 0;">
+        <li>Availability confirmation</li>
+        <li>Detailed pricing</li>
+        <li>Final booking confirmation</li>
+    </ul>
 
-    <h2 style="font-size: 18px; margin-top: 25px; margin-bottom: 15px;">Availability</h2>
-    <p>We will confirm the availability of the boat and crew for your preferred date and time.</p>
-
-    <h2 style="font-size: 18px; margin-top: 25px; margin-bottom: 15px;">Pricing</h2>
-    <p>We will provide you with a detailed price quote, including any applicable taxes or fees.</p>
-
-    <h2 style="font-size: 18px; margin-top: 25px; margin-bottom: 15px;">Booking Confirmation</h2>
-    <p>Upon confirmation, we will provide you with a booking confirmation email with all the relevant information.</p>
-
-    <p>We appreciate your interest in Rhumuda Boat Charter and look forward to providing you with a memorable boating experience.</p>
+    <p>Thank you for choosing Rhumuda Boat Charter.</p>
+    
+    <div style="margin-top: 20px; font-size: 12px; color: #666;">
+        <p>This is an automated message. Please do not reply to this email.</p>
+    </div>
 </body>
 </html>
